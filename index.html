@@ -158,28 +158,43 @@
   .store-text { text-align: left; }
   .store-label { display: block; font-weight: 700; font-size: 0.92rem; line-height: 1.25; }
   .store-hint { display: block; color: var(--text-muted); font-size: 0.74rem; font-weight: 500; }
-  .google-badge { height: 44px; width: auto; }
+  .store-card--google { padding: 0; overflow: hidden; }
+  .google-badge { display: block; width: 100%; height: 100%; object-fit: cover; }
 
-  details.ios-steps {
-    margin-top: 14px;
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 50;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-card {
+    position: relative;
     background: var(--card);
     border: 1px solid var(--card-border);
-    border-radius: 16px;
-    padding: 16px 18px;
+    border-radius: 20px;
+    padding: 22px;
+    max-width: 380px;
+    width: 100%;
   }
-  details.ios-steps[open] { padding-bottom: 20px; }
-  details.ios-steps summary {
+  .modal-close {
+    position: absolute;
+    top: 14px; right: 14px;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(244,243,244,0.08);
+    color: var(--text-muted);
+    display: flex; align-items: center; justify-content: center;
     cursor: pointer;
-    font-weight: 700;
-    font-size: 0.92rem;
-    list-style: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
   }
-  details.ios-steps summary::-webkit-details-marker { display: none; }
-  .chev { color: var(--gold); transition: transform 0.15s ease; }
-  details.ios-steps[open] .chev { transform: rotate(180deg); }
+  .modal-title { font-weight: 700; font-size: 1rem; margin: 0 32px 0 0; }
+
   .ios-list {
     margin: 14px 0 0;
     padding-left: 20px;
@@ -239,10 +254,10 @@
   <p class="cta-sub" data-i18n="ctaSub">Gratis, sin instalar nada. Funciona en móvil y ordenador.</p>
 
   <div class="store-row">
-    <a class="store-card" href="https://play.google.com/store/apps/details?id=com.xabmer.rebitz" target="_blank" rel="noopener">
+    <a class="store-card store-card--google" href="https://play.google.com/store/apps/details?id=com.xabmer.rebitz" target="_blank" rel="noopener">
       <img class="google-badge" id="google-badge" src="https://play.google.com/intl/en_us/badges/static/images/badges/es_badge_web_generic.png" alt="Disponible en Google Play" />
     </a>
-    <a class="store-card" href="#ios-install" onclick="document.getElementById('ios-install').open = true; return true;">
+    <a class="store-card" href="#" onclick="openIosModal(); return false;">
       <div class="store-icon-badge">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#D4AF61" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 3v12"/>
@@ -256,20 +271,6 @@
       </span>
     </a>
   </div>
-
-  <details class="ios-steps" id="ios-install">
-    <summary>
-      <span data-i18n="iosStepsTitle">¿Cómo instalar Rebitz en iPhone?</span>
-      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-    </summary>
-    <ol class="ios-list">
-      <li data-i18n="iosStep1">Abre <strong>este enlace en Safari</strong>: <a href="https://rebitz-play.vercel.app/" style="color:var(--lime)">rebitz-play.vercel.app</a></li>
-      <li data-i18n="iosStep2">Toca el icono de <strong>Compartir</strong> (el cuadrado con la flecha hacia arriba) en la barra inferior de Safari.</li>
-      <li data-i18n="iosStep3">Desliza y selecciona <strong>"Añadir a pantalla de inicio"</strong>.</li>
-      <li data-i18n="iosStep4">Toca <strong>"Añadir"</strong> arriba a la derecha.</li>
-    </ol>
-    <p class="ios-note" data-i18n="iosNote">Rebitz aparecerá como una app más en tu pantalla de inicio, con su propio icono.</p>
-  </details>
 
   <div class="features">
     <div class="feature">
@@ -295,6 +296,20 @@
   <footer>
     <p><a href="https://rebitz-privacy.vercel.app/" data-i18n="privacyLink">Política de privacidad</a></p>
   </footer>
+</div>
+
+<div class="modal-overlay" id="ios-modal" onclick="if(event.target===this) closeIosModal();">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeIosModal();" aria-label="Cerrar">✕</button>
+    <p class="modal-title" data-i18n="iosStepsTitle">¿Cómo instalar Rebitz en iPhone?</p>
+    <ol class="ios-list">
+      <li data-i18n="iosStep1">Abre <strong>este enlace en Safari</strong>: <a href="https://rebitz-play.vercel.app/" style="color:var(--lime)">rebitz-play.vercel.app</a></li>
+      <li data-i18n="iosStep2">Toca el icono de <strong>Compartir</strong> (el cuadrado con la flecha hacia arriba) en la barra inferior de Safari.</li>
+      <li data-i18n="iosStep3">Desliza y selecciona <strong>"Añadir a pantalla de inicio"</strong>.</li>
+      <li data-i18n="iosStep4">Toca <strong>"Añadir"</strong> arriba a la derecha.</li>
+    </ol>
+    <p class="ios-note" data-i18n="iosNote">Rebitz aparecerá como una app más en tu pantalla de inicio, con su propio icono.</p>
+  </div>
 </div>
 
 <script>
@@ -364,6 +379,10 @@
 
   const saved = (() => { try { return localStorage.getItem('rebitz-lang'); } catch (e) { return null; } })();
   setLang(saved === 'en' ? 'en' : 'es');
+
+  function openIosModal() { document.getElementById('ios-modal').classList.add('open'); }
+  function closeIosModal() { document.getElementById('ios-modal').classList.remove('open'); }
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeIosModal(); });
 </script>
 </body>
 </html>
