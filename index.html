@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Rebitz — La trivia de fútbol que engancha</title>
 <meta name="description" content="Rebitz: tests de fútbol de 20 preguntas, ranking mundial y ligas privadas con amigos. Juega gratis en el navegador o instálala en tu móvil." />
+<link rel="icon" href="https://rebitz-play.vercel.app/favicon.ico" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap"></noscript>
 <style>
   :root {
     --bg: #050607;
@@ -18,41 +19,93 @@
     --text: #f4f3f4;
     --text-muted: #9a9a9a;
     --card: #101214;
-    --border: rgba(244,243,244,0.1);
+    --card-border: rgba(244,243,244,0.09);
   }
   * { box-sizing: border-box; }
+  html { background: var(--bg); }
   body {
     margin: 0;
     font-family: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
     background: var(--bg);
     color: var(--text);
     line-height: 1.5;
+    position: relative;
+    overflow-x: hidden;
   }
-  .wrap { max-width: 560px; margin: 0 auto; padding: 56px 24px 80px; }
-  .logo-badge {
-    width: 96px; height: 96px; border-radius: 24px;
-    margin: 0 auto 22px;
-    display: flex; align-items: center; justify-content: center;
-    background: radial-gradient(circle at 30% 25%, var(--lime-bright), var(--lime) 65%);
-    box-shadow: 0 0 60px rgba(187,216,5,0.35);
-    font-size: 44px;
+  .glow {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(70px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .glow-lime { width: 420px; height: 420px; top: -160px; right: -120px; background: rgba(187,216,5,0.22); }
+  .glow-gold { width: 380px; height: 380px; bottom: -140px; left: -140px; background: rgba(212,175,97,0.14); }
+
+  nav {
+    position: relative;
+    z-index: 1;
+    max-width: 640px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 24px 0;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand img { width: 30px; height: 30px; border-radius: 8px; display: block; }
+  .brand span { font-weight: 800; letter-spacing: 0.02em; font-size: 1rem; }
+  .lang-toggle {
+    display: flex;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .lang-toggle button {
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.72rem;
+    padding: 6px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+  }
+  .lang-toggle button.active { background: var(--lime); color: #16210a; }
+
+  .wrap { position: relative; z-index: 1; max-width: 560px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .app-icon {
+    width: 92px; height: 92px; border-radius: 22px;
+    margin: 0 auto 24px;
+    display: block;
+    box-shadow: 0 0 50px rgba(187,216,5,0.3), 0 8px 24px rgba(0,0,0,0.4);
   }
   h1 {
     text-align: center;
-    font-size: 2.1rem;
+    font-size: 2rem;
     font-weight: 800;
-    margin: 0 0 6px;
+    margin: 0 0 8px;
     letter-spacing: -0.02em;
   }
   .tagline {
     text-align: center;
     color: var(--text-muted);
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 500;
-    margin: 0 0 40px;
+    margin: 0 auto 40px;
+    max-width: 380px;
   }
+
   .cta-primary {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     text-align: center;
     text-decoration: none;
     background: linear-gradient(135deg, var(--lime-bright), var(--lime));
@@ -62,53 +115,55 @@
     padding: 18px 20px;
     border-radius: 16px;
     box-shadow: 0 10px 30px rgba(187,216,5,0.25);
-    margin-bottom: 14px;
+    margin-bottom: 12px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
+  .cta-primary:hover { transform: translateY(-1px); box-shadow: 0 14px 36px rgba(187,216,5,0.32); }
+  .cta-primary svg { flex-shrink: 0; }
   .cta-sub {
     text-align: center;
     color: var(--text-muted);
     font-size: 0.85rem;
     font-weight: 500;
-    margin: 0 0 36px;
+    margin: 0 0 32px;
   }
-  .store-row {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 8px;
-  }
+
+  .store-row { display: flex; gap: 12px; }
   .store-card {
     flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
     background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 18px 14px;
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 16px;
+    height: 76px;
     text-align: center;
     text-decoration: none;
     color: var(--text);
     cursor: pointer;
+    transition: border-color 0.15s ease, transform 0.15s ease;
   }
-  .store-card img { height: 40px; margin-bottom: 8px; }
-  .store-icon {
-    font-size: 30px;
-    margin-bottom: 8px;
-    display: block;
+  .store-card:hover { border-color: rgba(244,243,244,0.22); transform: translateY(-1px); }
+  .store-icon-badge {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(244,243,244,0.06);
+    flex-shrink: 0;
   }
-  .store-label {
-    display: block;
-    font-weight: 700;
-    font-size: 0.92rem;
-  }
-  .store-hint {
-    display: block;
-    color: var(--text-muted);
-    font-size: 0.78rem;
-    margin-top: 2px;
-    font-weight: 500;
-  }
+  .store-icon-badge svg { display: block; }
+  .store-text { text-align: left; }
+  .store-label { display: block; font-weight: 700; font-size: 0.92rem; line-height: 1.25; }
+  .store-hint { display: block; color: var(--text-muted); font-size: 0.74rem; font-weight: 500; }
+  .google-badge { height: 44px; width: auto; }
+
   details.ios-steps {
-    margin-top: 16px;
+    margin-top: 14px;
     background: var(--card);
-    border: 1px solid var(--border);
+    border: 1px solid var(--card-border);
     border-radius: 16px;
     padding: 16px 18px;
   }
@@ -116,98 +171,199 @@
   details.ios-steps summary {
     cursor: pointer;
     font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
   details.ios-steps summary::-webkit-details-marker { display: none; }
-  details.ios-steps summary::after {
-    content: " ▾";
-    color: var(--gold);
-  }
-  details.ios-steps[open] summary::after { content: " ▴"; }
+  .chev { color: var(--gold); transition: transform 0.15s ease; }
+  details.ios-steps[open] .chev { transform: rotate(180deg); }
   .ios-list {
     margin: 14px 0 0;
     padding-left: 20px;
     color: var(--text-muted);
-    font-size: 0.92rem;
+    font-size: 0.9rem;
   }
   .ios-list li { margin-bottom: 8px; }
   .ios-list strong { color: var(--text); }
-  .features {
-    margin-top: 56px;
-    display: grid;
-    gap: 14px;
-  }
+  .ios-note { margin: 14px 0 0; color: var(--text-muted); font-size: 0.82rem; }
+
+  .features { margin-top: 56px; display: grid; gap: 12px; }
   .feature {
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
+    display: flex; gap: 14px; align-items: flex-start;
     background: var(--card);
-    border: 1px solid var(--border);
+    border: 1px solid var(--card-border);
     border-radius: 14px;
     padding: 16px;
   }
-  .feature-icon { font-size: 22px; }
-  .feature h3 { margin: 0 0 2px; font-size: 0.98rem; }
-  .feature p { margin: 0; color: var(--text-muted); font-size: 0.86rem; }
-  footer {
-    margin-top: 60px;
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 0.8rem;
+  .feature-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: rgba(187,216,5,0.12);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
   }
+  .feature-icon svg { color: var(--lime); }
+  .feature h3 { margin: 0 0 2px; font-size: 0.96rem; }
+  .feature p { margin: 0; color: var(--text-muted); font-size: 0.85rem; }
+
+  footer { margin-top: 56px; text-align: center; color: var(--text-muted); font-size: 0.8rem; }
   footer a { color: var(--text-muted); }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="logo-badge">⚽</div>
-  <h1>REBITZ</h1>
-  <p class="tagline">La trivia de fútbol que engancha</p>
+<div class="glow glow-lime"></div>
+<div class="glow glow-gold"></div>
 
-  <a class="cta-primary" href="https://rebitz-play.vercel.app/">▶ Jugar ahora en el navegador</a>
-  <p class="cta-sub">Gratis, sin instalar nada. Funciona en móvil y ordenador.</p>
+<nav>
+  <div class="brand">
+    <img src="https://rebitz-play.vercel.app/icon-192.png" alt="Rebitz" />
+    <span>REBITZ</span>
+  </div>
+  <div class="lang-toggle">
+    <button id="btn-es" onclick="setLang('es')">ES</button>
+    <button id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+</nav>
+
+<div class="wrap">
+  <img class="app-icon" src="https://rebitz-play.vercel.app/icon-512.png" alt="Rebitz" />
+  <h1 data-i18n="h1">La trivia de fútbol que engancha</h1>
+  <p class="tagline" data-i18n="tagline">Tests de 20 preguntas, ranking mundial y ligas privadas con tus amigos.</p>
+
+  <a class="cta-primary" href="https://rebitz-play.vercel.app/">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+    <span data-i18n="ctaPrimary">Jugar ahora en el navegador</span>
+  </a>
+  <p class="cta-sub" data-i18n="ctaSub">Gratis, sin instalar nada. Funciona en móvil y ordenador.</p>
 
   <div class="store-row">
     <a class="store-card" href="https://play.google.com/store/apps/details?id=com.xabmer.rebitz" target="_blank" rel="noopener">
-      <img src="https://play.google.com/intl/en_us/badges/static/images/badges/es_badge_web_generic.png" alt="Disponible en Google Play" />
+      <img class="google-badge" id="google-badge" src="https://play.google.com/intl/en_us/badges/static/images/badges/es_badge_web_generic.png" alt="Disponible en Google Play" />
     </a>
-    <a class="store-card" href="#ios-install" onclick="document.getElementById('ios-install').open = true;">
-      <span class="store-icon">🍎</span>
-      <span class="store-label">Instalar en iPhone</span>
-      <span class="store-hint">Desde Safari</span>
+    <a class="store-card" href="#ios-install" onclick="document.getElementById('ios-install').open = true; return true;">
+      <div class="store-icon-badge">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#D4AF61" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v12"/>
+          <path d="M7 8l5-5 5 5"/>
+          <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/>
+        </svg>
+      </div>
+      <span class="store-text">
+        <span class="store-label" data-i18n="iosLabel">Instalar en iPhone</span>
+        <span class="store-hint" data-i18n="iosHint">Añádela a tu pantalla de inicio</span>
+      </span>
     </a>
   </div>
 
   <details class="ios-steps" id="ios-install">
-    <summary>¿Cómo instalar Rebitz en iPhone?</summary>
+    <summary>
+      <span data-i18n="iosStepsTitle">¿Cómo instalar Rebitz en iPhone?</span>
+      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </summary>
     <ol class="ios-list">
-      <li>Abre <strong>este enlace en Safari</strong>: <a href="https://rebitz-play.vercel.app/" style="color:var(--lime)">rebitz-play.vercel.app</a></li>
-      <li>Toca el icono de <strong>Compartir</strong> (el cuadrado con la flecha hacia arriba) en la barra inferior.</li>
-      <li>Desliza y selecciona <strong>"Añadir a pantalla de inicio"</strong>.</li>
-      <li>Toca <strong>"Añadir"</strong> arriba a la derecha.</li>
+      <li data-i18n="iosStep1">Abre <strong>este enlace en Safari</strong>: <a href="https://rebitz-play.vercel.app/" style="color:var(--lime)">rebitz-play.vercel.app</a></li>
+      <li data-i18n="iosStep2">Toca el icono de <strong>Compartir</strong> (el cuadrado con la flecha hacia arriba) en la barra inferior de Safari.</li>
+      <li data-i18n="iosStep3">Desliza y selecciona <strong>"Añadir a pantalla de inicio"</strong>.</li>
+      <li data-i18n="iosStep4">Toca <strong>"Añadir"</strong> arriba a la derecha.</li>
     </ol>
-    <p style="margin:14px 0 0;color:var(--text-muted);font-size:0.85rem;">Rebitz aparecerá como una app más en tu pantalla de inicio, con su propio icono.</p>
+    <p class="ios-note" data-i18n="iosNote">Rebitz aparecerá como una app más en tu pantalla de inicio, con su propio icono.</p>
   </details>
 
   <div class="features">
     <div class="feature">
-      <span class="feature-icon">🧠</span>
-      <div><h3>Tests de 20 preguntas</h3><p>Reglas, historia, mundiales, clubes, jugadores y mucho más.</p></div>
+      <div class="feature-icon">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+      </div>
+      <div><h3 data-i18n="f1Title">Tests de 20 preguntas</h3><p data-i18n="f1Desc">Reglas, historia, mundiales, clubes, jugadores y mucho más.</p></div>
     </div>
     <div class="feature">
-      <span class="feature-icon">🏆</span>
-      <div><h3>Ranking mundial y por temporada</h3><p>Compite por puntos y sube en la clasificación cada mes.</p></div>
+      <div class="feature-icon">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+      </div>
+      <div><h3 data-i18n="f2Title">Ranking mundial y por temporada</h3><p data-i18n="f2Desc">Compite por puntos y sube en la clasificación cada mes.</p></div>
     </div>
     <div class="feature">
-      <span class="feature-icon">👥</span>
-      <div><h3>Ligas privadas</h3><p>Crea una liga con tus amigos y descubre quién sabe más de fútbol.</p></div>
+      <div class="feature-icon">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+      </div>
+      <div><h3 data-i18n="f3Title">Ligas privadas</h3><p data-i18n="f3Desc">Crea una liga con tus amigos y descubre quién sabe más de fútbol.</p></div>
     </div>
   </div>
 
   <footer>
-    <p><a href="https://rebitz-privacy.vercel.app/">Política de privacidad</a></p>
+    <p><a href="https://rebitz-privacy.vercel.app/" data-i18n="privacyLink">Política de privacidad</a></p>
   </footer>
 </div>
+
+<script>
+  const I18N = {
+    es: {
+      h1: "La trivia de fútbol que engancha",
+      tagline: "Tests de 20 preguntas, ranking mundial y ligas privadas con tus amigos.",
+      ctaPrimary: "Jugar ahora en el navegador",
+      ctaSub: "Gratis, sin instalar nada. Funciona en móvil y ordenador.",
+      androidHint: "Disponible para Android",
+      iosLabel: "Instalar en iPhone",
+      iosHint: "Añádela a tu pantalla de inicio",
+      iosStepsTitle: "¿Cómo instalar Rebitz en iPhone?",
+      iosStep1: 'Abre <strong>este enlace en Safari</strong>: <a href="https://rebitz-play.vercel.app/" style="color:var(--lime)">rebitz-play.vercel.app</a>',
+      iosStep2: "Toca el icono de <strong>Compartir</strong> (el cuadrado con la flecha hacia arriba) en la barra inferior de Safari.",
+      iosStep3: 'Desliza y selecciona <strong>"Añadir a pantalla de inicio"</strong>.',
+      iosStep4: 'Toca <strong>"Añadir"</strong> arriba a la derecha.',
+      iosNote: "Rebitz aparecerá como una app más en tu pantalla de inicio, con su propio icono.",
+      f1Title: "Tests de 20 preguntas",
+      f1Desc: "Reglas, historia, mundiales, clubes, jugadores y mucho más.",
+      f2Title: "Ranking mundial y por temporada",
+      f2Desc: "Compite por puntos y sube en la clasificación cada mes.",
+      f3Title: "Ligas privadas",
+      f3Desc: "Crea una liga con tus amigos y descubre quién sabe más de fútbol.",
+      privacyLink: "Política de privacidad",
+      title: "Rebitz — La trivia de fútbol que engancha",
+    },
+    en: {
+      h1: "The football trivia that hooks you",
+      tagline: "20-question tests, a world ranking, and private leagues with your friends.",
+      ctaPrimary: "Play now in your browser",
+      ctaSub: "Free, nothing to install. Works on mobile and desktop.",
+      androidHint: "Available on Android",
+      iosLabel: "Install on iPhone",
+      iosHint: "Add it to your home screen",
+      iosStepsTitle: "How do I install Rebitz on iPhone?",
+      iosStep1: 'Open <strong>this link in Safari</strong>: <a href="https://rebitz-play.vercel.app/" style="color:var(--lime)">rebitz-play.vercel.app</a>',
+      iosStep2: "Tap the <strong>Share</strong> icon (the square with an arrow pointing up) in Safari's bottom bar.",
+      iosStep3: 'Scroll down and select <strong>"Add to Home Screen"</strong>.',
+      iosStep4: 'Tap <strong>"Add"</strong> in the top right corner.',
+      iosNote: "Rebitz will appear on your home screen like any other app, with its own icon.",
+      f1Title: "20-question tests",
+      f1Desc: "Rules, history, World Cups, clubs, players, and much more.",
+      f2Title: "World and seasonal ranking",
+      f2Desc: "Compete for points and climb the leaderboard every month.",
+      f3Title: "Private leagues",
+      f3Desc: "Create a league with your friends and find out who knows football best.",
+      privacyLink: "Privacy policy",
+      title: "Rebitz — The football trivia that hooks you",
+    },
+  };
+
+  function setLang(lang) {
+    document.documentElement.lang = lang;
+    document.title = I18N[lang].title;
+    document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      const key = el.getAttribute('data-i18n');
+      if (I18N[lang][key] !== undefined) el.innerHTML = I18N[lang][key];
+    });
+    document.getElementById('google-badge').src = lang === 'en'
+      ? 'https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'
+      : 'https://play.google.com/intl/en_us/badges/static/images/badges/es_badge_web_generic.png';
+    try { localStorage.setItem('rebitz-lang', lang); } catch (e) {}
+  }
+
+  const saved = (() => { try { return localStorage.getItem('rebitz-lang'); } catch (e) { return null; } })();
+  setLang(saved === 'en' ? 'en' : 'es');
+</script>
 </body>
 </html>
